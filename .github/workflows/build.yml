@@ -42,6 +42,13 @@ jobs:
           # Запускаем тесты и генерируем отчет coverage.xml, который SonarCloud умеет читать
           pytest --cov=. --cov-report=xml:coverage.xml
 
+      # 3. Запуск тестов с генерацией отчета о покрытии (Coverage)
+      - name: Run Tests with Coverage
+        run: |
+          # Запускаем тесты и генерируем отчет в формате XML (который понимает SonarCloud)
+          pytest --cov=. --cov-report=xml:coverage.xml
+        # Если тесты провалятся, SonarCloud не запустится, что тоже полезно.
+
       # 4. Запуск SonarCloud анализа
       - name: SonarCloud Scan
         # Используем официальный Action, который лучше интегрируется
@@ -49,8 +56,9 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           # Указываем, что это Python-проект
-          SONAR_SCANNER_OPTS: >-
-            -Dsonar.python.coverage.reportPaths=coverage.xml 
-            -Dsonar.sources=. 
-            -Dsonar.projectKey=Fredrix24-Calculator # Убедитесь, что ключ совпадает с тем, что в sonar-project.properties
-            -Dsonar.organization=Fredrix24 # Убедитесь, что организация совпадает
+          # Это обычно не нужно, но можно указать явно
+          # SONAR_SCANNER_OPTS: >-
+          #   -Dsonar.python.coverage.reportPaths=coverage.xml
+          #   -Dsonar.sources=.
+          #   -Dsonar.projectKey=Fredrix24-Calculator # Убедитесь, что ключ совпадает с тем, что в sonar-project.properties
+          #   -Dsonar.organization=Fredrix24 # Убедитесь, что организация совпадает
