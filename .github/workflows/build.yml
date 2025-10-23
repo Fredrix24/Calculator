@@ -35,13 +35,10 @@ jobs:
           pip install -r requirements.txt # Убедитесь, что здесь есть pytest и pytest-cov
           # Если requirements.txt пуст, уберите эту строку и добавьте pip install pytest pytest-cov
 
-      # 3. Запуск тестов с генерацией отчета о покрытии (Coverage)
       - name: Run Tests with Coverage
         run: |
-          # Запускаем pytest из корневой директории
-          # --cov=. означает, что мы хотим покрыть весь текущий проект
-          # --cov-report=xml:coverage.xml генерирует отчет для SonarCloud
-          pytest --cov=. --cov-report=xml:coverage.xml
+          # Явно вызываем Python для запуска pytest как модуля
+          python -m pytest --cov=. --cov-report=xml:coverage.xml
 
       # 4. Запуск анализа SonarCloud
       - name: SonarCloud Scan
