@@ -36,8 +36,8 @@ jobs:
       # 3. Запуск тестов с генерацией отчета о покрытии (Coverage)
       - name: Run Tests with Coverage
         run: |
-          # Запускаем тесты, указываем, чтобы покрыть весь проект (.), и генерируем XML отчет
-          pytest --cov=. --cov-report=xml:coverage.xml
+          # Добавляем корневую директорию (..) в PATH для поиска модуля 'calculator'
+          pytest --cov=. --cov-report=xml:coverage.xml --rootdir=.
 
       # 4. Запуск анализа SonarCloud
       - name: SonarCloud Scan
