@@ -1,11 +1,8 @@
-# Если calculator.py в корне проекта
-import sys
-import os
+# tests/test_calculator.py
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
+# Теперь мы импортируем из пакета 'calculator'
 from calculator import add, subtract, multiply, divide
-import pytest  # Импортируем pytest (обычно это не нужно, но иногда помогает)
+import pytest
 
 def test_add():
     assert add(5, 3) == 8

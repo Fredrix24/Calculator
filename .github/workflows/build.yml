@@ -10,13 +10,12 @@ on:
 jobs:
   analyze:
     name: Analyze
-    # Используем Linux Runner, так как он более стабилен для Python CI/CD
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Необходимо для правильного анализа изменений
+          fetch-depth: 0
 
       # 1. Настройка Python
       - name: Set up Python
@@ -25,29 +24,27 @@ jobs:
           python-version: '3.10' # Установите вашу рабочую версию Python
           cache: 'pip'
 
-      # 2. Установка зависимостей (pytest, pytest-cov, и т.д.)
+      # 2. Установка зависимостей
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Устанавливаем только то, что нужно для тестов и анализа (pytest, pytest-cov)
-          # Если у вас есть requirements.txt, используйте: pip install -r requirements.txt
-          pip install pytest pytest-cov
+          # Устанавливаем наш собственный пакет (calculator) и инструменты тестирования
+          # Если вы запускаете pytest с --cov=., то он должен найти calculator.py
+          # Если же calculator.py лежит в подпапке, то надо будет устанавливать:
+          # pip install .
+          pip install -r requirements.txt # Убедитесь, что здесь есть pytest и pytest-cov
+          # Если requirements.txt пуст, уберите эту строку и добавьте pip install pytest pytest-cov
 
       # 3. Запуск тестов с генерацией отчета о покрытии (Coverage)
       - name: Run Tests with Coverage
         run: |
-          # Добавляем корневую директорию (..) в PATH для поиска модуля 'calculator'
-          pytest --cov=. --cov-report=xml:coverage.xml --rootdir=.
+          # Запускаем pytest из корневой директории
+          # --cov=. означает, что мы хотим покрыть весь текущий проект
+          # --cov-report=xml:coverage.xml генерирует отчет для SonarCloud
+          pytest --cov=. --cov-report=xml:coverage.xml
 
       # 4. Запуск анализа SonarCloud
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2.1.1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        # ВАЖНО: Убедитесь, что эти ключи совпадают с вашим sonar-project.properties
-        # и настройками на SonarCloud UI.
-        # Если вы не хотите использовать sonar-project.properties, можно передать их тут:
-        # with:
-        #   projectKey: Fredrix24-Calculator
-        #   organization: Fredrix24
-        #   token: ${{ secrets.SONAR_TOKEN }}
