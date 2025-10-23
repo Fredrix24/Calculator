@@ -3,62 +3,51 @@ name: SonarCloud Analysis (Python Calculator)
 on:
   push:
     branches:
-      - master # Проверьте, как называется ваша основная ветка (main или master)
+      - master # Убедитесь, что это master или main, в зависимости от вашей главной ветки
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
   analyze:
     name: Analyze
-    # Переключаемся на Linux, где Python и инструменты работают лучше всего
+    # Используем Linux Runner, так как он более стабилен для Python CI/CD
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Важно для SonarQube
+          fetch-depth: 0  # Необходимо для правильного анализа изменений
 
       # 1. Настройка Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10' # Выберите подходящую версию
+          python-version: '3.10' # Установите вашу рабочую версию Python
           cache: 'pip'
 
-      # 2. Установка зависимостей (включая инструменты анализа и тестирования)
+      # 2. Установка зависимостей (pytest, pytest-cov, и т.д.)
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Устанавливаем SonarScanner CLI (если нужно для ручного запуска)
-          pip install sonar-scanner
-          # Устанавливаем инструменты для тестирования
-          pip install -r requirements.txt 
-          # Если requirements.txt пуст, можно поставить pytest и pytest-cov напрямую:
-          # pip install pytest pytest-cov
+          # Устанавливаем только то, что нужно для тестов и анализа (pytest, pytest-cov)
+          # Если у вас есть requirements.txt, используйте: pip install -r requirements.txt
+          pip install pytest pytest-cov
 
       # 3. Запуск тестов с генерацией отчета о покрытии (Coverage)
       - name: Run Tests with Coverage
         run: |
-          # Запускаем тесты и генерируем отчет coverage.xml, который SonarCloud умеет читать
+          # Запускаем тесты, указываем, чтобы покрыть весь проект (.), и генерируем XML отчет
           pytest --cov=. --cov-report=xml:coverage.xml
 
-      # 3. Запуск тестов с генерацией отчета о покрытии (Coverage)
-      - name: Run Tests with Coverage
-        run: |
-          # Запускаем тесты и генерируем отчет в формате XML (который понимает SonarCloud)
-          pytest --cov=. --cov-report=xml:coverage.xml
-        # Если тесты провалятся, SonarCloud не запустится, что тоже полезно.
-
-      # 4. Запуск SonarCloud анализа
+      # 4. Запуск анализа SonarCloud
       - name: SonarCloud Scan
-        # Используем официальный Action, который лучше интегрируется
         uses: SonarSource/sonarcloud-github-action@v2.1.1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          # Указываем, что это Python-проект
-          # Это обычно не нужно, но можно указать явно
-          # SONAR_SCANNER_OPTS: >-
-          #   -Dsonar.python.coverage.reportPaths=coverage.xml
-          #   -Dsonar.sources=.
-          #   -Dsonar.projectKey=Fredrix24-Calculator # Убедитесь, что ключ совпадает с тем, что в sonar-project.properties
-          #   -Dsonar.organization=Fredrix24 # Убедитесь, что организация совпадает
+        # ВАЖНО: Убедитесь, что эти ключи совпадают с вашим sonar-project.properties
+        # и настройками на SonarCloud UI.
+        # Если вы не хотите использовать sonar-project.properties, можно передать их тут:
+        # with:
+        #   projectKey: Fredrix24-Calculator
+        #   organization: Fredrix24
+        #   token: ${{ secrets.SONAR_TOKEN }}
