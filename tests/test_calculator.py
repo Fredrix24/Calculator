@@ -1,8 +1,6 @@
 # tests/test_calculator.py
-
-# Теперь мы импортируем из пакета 'calculator'
-from calculator import add, subtract, multiply, divide
-import pytest
+from calculator import add, subtract, multiply, divide  # Импорт из пакета 'calculator'
+import pytest # Импортируем pytest (обычно это не нужно, но иногда помогает)
 
 def test_add():
     assert add(5, 3) == 8
