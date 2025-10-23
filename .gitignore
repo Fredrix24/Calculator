@@ -1,0 +1,18 @@
+# Byte-compiled files
+__pycache__/
+*.pyc
+
+# Virtual environment (создано PyCharm)
+.venv/
+venv/
+Lib/
+Scripts/
+
+# PyCharm specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# SonarCloud properties we don't need to commit if generated
+# (Not usually needed, but good practice if they change often)
