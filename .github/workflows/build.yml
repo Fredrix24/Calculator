@@ -31,11 +31,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-cov
 
-      # 3. Запуск тестов с генерацией отчета о покрытии (Coverage)
       - name: Run Tests with Coverage
         run: |
-          # Запускаем тесты и генерируем отчет coverage.xml, который SonarCloud умеет читать
-          pytest calculator.py --cov=calculator --cov-report=xml:coverage.xml
+          # ГАРАНТИРОВАННО ПЕРЕХОДИМ В КОРЕНЬ!
+          cd $GITHUB_WORKSPACE 
+          # Запускаем pytest, указывая, что тесты находятся в calculator.py
+          # И говорим покрыть МОДУЛЬ 'calculator'
+          python -m pytest calculator.py --cov=calculator --cov-report=xml:coverage.xml
 
       # 4. Запуск SonarCloud анализа
       - name: SonarCloud Scan
