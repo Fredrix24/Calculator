@@ -1,7 +1,10 @@
 import tkinter as tk
+#import pytest
 
 def create_calculator():
     window = tk.Tk()
+    b = 1;
+    #12345
     window.title("Калькулятор")
     window.geometry("300x400")
     window.resizable(False, False)
