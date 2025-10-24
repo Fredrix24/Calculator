@@ -37,7 +37,7 @@ jobs:
           cd $GITHUB_WORKSPACE 
           # Запускаем pytest, указывая, что тесты находятся в calculator.py
           # И говорим покрыть МОДУЛЬ 'calculator'
-          python -m pytest calculator.py --cov=calculator --cov-report=xml:coverage.xml
+          python -m pytest Calculator.py --cov=Calculator --cov-report=xml:coverage.xml
 
       # 4. Запуск SonarCloud анализа
       - name: SonarCloud Scan
