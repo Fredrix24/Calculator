@@ -1,10 +1,4 @@
 import tkinter as tk
-import sys
-import os
-import pytest  # Импортируем pytest
-
-
-# --- 1. ЛОГИКА КАЛЬКУЛЯТОРА (Она осталась прежней) ---
 
 def create_calculator():
     window = tk.Tk()
@@ -71,61 +65,3 @@ def create_calculator():
         window.grid_rowconfigure(i, weight=1)
     for i in range(4):
         window.grid_columnconfigure(i, weight=1)
-
-    # Мы НЕ вызываем window.mainloop() здесь, иначе CI не сможет протестировать логику!
-    # window.mainloop()
-
-    # Возвращаем виджеты или главное окно, если нужно для тестов, но для покрытия это не обязательно
-
-
-# --- 2. ТЕСТЫ ДЛЯ КАЛЬКУЛЯТОРА (Теперь они в этом файле) ---
-
-# Создаем фиктивные функции для тестирования, так как GUI сложно тестировать
-def add(a, b):
-    return a + b
-
-
-def subtract(a, b):
-    return a - b
-
-
-def multiply(a, b):
-    return a * b
-
-
-def divide(a, b):
-    if b == 0:
-        return "Error: Division by zero"
-    return a / b
-
-
-# Создаем функцию pytest-совместимого теста
-def test_math_operations():
-    # Тестируем функции, которые мы можем изолировать
-    assert add(5, 3) == 8
-    assert subtract(10, 5) == 5
-    assert multiply(4, 5) == 20
-    assert divide(10, 2) == 5.0
-    assert divide(10, 0) == "Error: Division by zero"
-
-    # Проверка, что функция GUI в принципе запускается (хотя она будет пропущена из-за mainloop)
-    try:
-        # Этот тест может быть провален, если mainloop заблокирует CI
-        # Лучше его не запускать, а тестировать только чистые функции
-        pass
-    except Exception:
-        pass
-
-
-# --- 3. ЗАПУСК ПРИЛОЖЕНИЯ ИЛИ ТЕСТОВ ---
-
-if __name__ == "__main__":
-    # Проверяем, запущен ли скрипт напрямую (для запуска GUI)
-    # или через pytest (для запуска тестов)
-
-    if "pytest" in sys.argv[0] or "pytest" in str(sys.argv):
-        # Если запущен pytest, он найдет функцию test_math_operations
-        pass
-    else:
-        create_calculator()
-        window.mainloop()
