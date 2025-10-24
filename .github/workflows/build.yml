@@ -1,47 +1,19 @@
-name: SonarCloud Analysis (Python Calculator)
-
+name: Build
 on:
   push:
     branches:
-      - master # Убедитесь, что это master или main, в зависимости от вашей главной ветки
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
-
 jobs:
-  analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-
+  sonarqube:
+    name: SonarQube
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-
-      # 1. Настройка Python
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10' # Установите вашу рабочую версию Python
-          cache: 'pip'
-
-      # 2. Установка зависимостей
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          # Устанавливаем наш собственный пакет (calculator) и инструменты тестирования
-          # Если вы запускаете pytest с --cov=., то он должен найти calculator.py
-          # Если же calculator.py лежит в подпапке, то надо будет устанавливать:
-          # pip install .
-          pip install -r requirements.txt # Убедитесь, что здесь есть pytest и pytest-cov
-          # Если requirements.txt пуст, уберите эту строку и добавьте pip install pytest pytest-cov
-
-      - name: Run Tests with Coverage
-        run: |
-          # Указываем pytest явно на файл test_calculator.py
-          python -m pytest tests/test_calculator.py --cov=. --cov-report=xml:coverage.xml
-
-      # 4. Запуск анализа SonarCloud
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2.1.1
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
