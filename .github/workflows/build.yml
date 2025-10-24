@@ -1,4 +1,4 @@
-name: SonarCloud Analysis
+name: SonarCloud Analysis (Single File + Debug)
 
 on:
   push:
@@ -33,11 +33,18 @@ jobs:
       # 3. Запуск тестов
       - name: Run Tests with Coverage
         run: |
-          # Поскольку тесты находятся в этом же файле, мы запускаем pytest
-          # и говорим ему покрыть ТОЛЬКО этот файл
-          pytest calculator.py --cov=calculator --cov-report=xml:coverage.xml
+          # --cov=calculator - указываем имя модуля для покрытия (без .py)
+          python -m pytest calculator.py --cov=calculator --cov-report=xml:coverage.xml
 
-      # 4. SonarCloud Scan
+      # 4. Отладка: Проверка, создан ли coverage.xml
+      - name: Debug: List files after tests
+        run: ls -l
+
+      # 5. Отладка: Вывод содержимого coverage.xml
+      - name: Debug: Print coverage.xml content
+        run: cat coverage.xml || echo "coverage.xml not found"
+
+      # 6. SonarCloud Scan
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2.1.1
         env:
