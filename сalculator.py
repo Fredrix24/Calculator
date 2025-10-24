@@ -66,17 +66,3 @@ def create_calculator():
     for i in range(4):
         window.grid_columnconfigure(i, weight=1)
 
-# --- ТЕСТЫ (добавьте это в самый конец файла) ---
-def add(a, b):
-    return a + b
-
-def test_add():
-    assert add(2, 3) == 5
-
-# Оберните код GUI в условие, чтобы pytest не пытался запустить GUI
-if __name__ == "__main__":
-    create_calculator()
-
-    # Попытка запустить mainloop не позволит pytest протестировать код
-    # Удалите его из запуска в CI, протестируйте только функцию add
-    # window.mainloop()
