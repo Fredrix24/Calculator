@@ -65,3 +65,17 @@ def create_calculator():
         window.grid_rowconfigure(i, weight=1)
     for i in range(4):
         window.grid_columnconfigure(i, weight=1)
+
+
+# (Остальной код calculator.py)
+
+# --- ТЕСТЫ (в конце файла) ---
+def add(a, b):
+    return a + b
+
+def test_add():
+    assert add(2, 3) == 5
+
+# if __name__ == "__main__":
+#     create_calculator()
+#     window.mainloop()
