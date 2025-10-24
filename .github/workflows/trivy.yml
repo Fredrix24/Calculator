@@ -1,0 +1,42 @@
+name: Trivy Security Scan (Dependencies)
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  trivy_scan:
+    name: Scan Dependencies with Trivy
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 1. Настройка Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      # 2. Установка зависимостей (ВАЖНО: Trivy будет сканировать их)
+      # Если у вас нет requirements.txt, Trivy ничего не найдет.
+      - name: Install Dependencies (for Trivy to scan)
+        run: |
+          # Создаем пустой файл, если его нет, чтобы установщик не падал
+          if [ ! -f requirements.txt ]; then touch requirements.txt; fi
+          pip install -r requirements.txt
+
+      # 3. Установка Trivy (через отдельное действие, так как это лучший способ)
+      - name: Install Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'  # Сканирование файловой системы
+          security-checks: 'vuln'
+          target: './'
+          ignore-unfixed: true
